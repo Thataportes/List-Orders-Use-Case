@@ -1,0 +1,15 @@
+# schema.graphql
+
+# Definição do tipo Order, representando uma ordem com campos relevantes
+type Order {
+    id: ID!
+    item: String!
+    quantity: Int!
+    price: Float!
+}
+
+# Definição da Query principal, incluindo a consulta listOrders
+type Query {
+    # listOrders retorna uma lista de todas as ordens no sistema
+    listOrders: [Order!]!
+}

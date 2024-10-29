@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package order;
+
+option go_package = "List-Orders-Use-Case/proto;proto";
+
+// Serviço gRPC chamado OrderService para operações relacionadas a ordens.
+service OrderService {
+    rpc ListOrders (ListOrdersRequest) returns (ListOrdersResponse);
+}
+
+// Mensagem de requisição para o método ListOrders.
+message ListOrdersRequest {}
+
+// Estrutura da mensagem que representa uma ordem.
+message Order {
+    int64 id = 1;
+    string item = 2;
+    int32 quantity = 3;
+    double price = 4;
+}
+
+// Mensagem de resposta para o método ListOrders, contendo uma lista de ordens.
+message ListOrdersResponse {
+    repeated Order orders = 1;
+}
