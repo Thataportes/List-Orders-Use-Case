@@ -28,3 +28,9 @@ func (s *OrderService) ListOrders() ([]Order, error) {
 	}
 	return orders, nil
 }
+
+func (s *OrderService) CreateOrder(order *Order) error {
+	query := "INSERT INTO orders (item, quantity, price) VALUES ($1, $2, $3)"
+	_, err := s.DB.Exec(query, order.Item, order.Quantity, order.Price)
+	return err
+}

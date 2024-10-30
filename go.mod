@@ -10,6 +10,8 @@ require (
 )
 
 require (
+	github.com/graphql-go/graphql v0.8.1 // indirect
+	github.com/graphql-go/handler v0.2.4 // indirect
 	golang.org/x/net v0.28.0 // indirect
 	golang.org/x/sys v0.24.0 // indirect
 	golang.org/x/text v0.17.0 // indirect

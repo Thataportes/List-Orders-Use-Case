@@ -21,5 +21,5 @@ Este projeto implementa um use case para listar pedidos utilizando REST, gRPC e 
 
 1. Clone o repositório:
    ```bash
-   git clone  https://github.com/Thataportes/Dollar-exchange-rate.git
+   git clone https://github.com/Thataportes/List-Orders-Use-Case
    cd List-Orders-Use-Case
