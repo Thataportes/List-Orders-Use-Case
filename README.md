@@ -23,3 +23,8 @@ Este projeto implementa um use case para listar pedidos utilizando REST, gRPC e 
    ```bash
    git clone https://github.com/Thataportes/List-Orders-Use-Case
    cd List-Orders-Use-Case
+
+## Portas
+- Servidor HTTP (REST): 8080
+- gRPC: 50051
+- GraphQL: 8080/graphql (Rota definida no handler do servidor HTTP.)
