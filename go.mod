@@ -4,14 +4,14 @@ go 1.23
 
 require (
 	github.com/gorilla/mux v1.8.1
+	github.com/graphql-go/graphql v0.8.1
+	github.com/graphql-go/handler v0.2.4
 	github.com/lib/pq v1.10.9
 	google.golang.org/grpc v1.67.1
 	google.golang.org/protobuf v1.35.1
 )
 
 require (
-	github.com/graphql-go/graphql v0.8.1 // indirect
-	github.com/graphql-go/handler v0.2.4 // indirect
 	golang.org/x/net v0.28.0 // indirect
 	golang.org/x/sys v0.24.0 // indirect
 	golang.org/x/text v0.17.0 // indirect

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"log"
+	"net"
 	"net/http"
 
 	"example.com/app/domain/orderapp"
@@ -10,9 +12,34 @@ import (
 	"example.com/business/domain/orderbus"
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
-
 	_ "github.com/lib/pq"
+	"google.golang.org/grpc"
 )
+
+// Server representa o servidor gRPC
+type Server struct {
+	orderbus.UnimplementedOrderServiceServer
+	service *orderbus.OrderService
+}
+
+func (s *Server) ListOrders(ctx context.Context, req *orderbus.ListOrdersRequest) (*orderbus.ListOrdersResponse, error) {
+	orders, err := s.service.ListOrders()
+	if err != nil {
+		log.Printf("Error querying orders: %v", err)
+		return nil, err
+	}
+
+	var grpcOrders []*orderbus.Order
+	for _, order := range orders {
+		grpcOrders = append(grpcOrders, &orderbus.Order{
+			Id:       order.ID,
+			Item:     order.Item,
+			Quantity: int32(order.Quantity),
+			Price:    order.Price,
+		})
+	}
+	return &orderbus.ListOrdersResponse{Orders: grpcOrders}, nil
+}
 
 func main() {
 	// Conexão com o banco de dados PostgreSQL
@@ -73,8 +100,26 @@ func main() {
 		GraphiQL: true,
 	}))
 
-	log.Println("Server running on port 8080")
-	if err := http.ListenAndServe(":8080", router); err != nil {
-		log.Fatalf("Server error: %v", err)
+	// Iniciar o servidor HTTP em uma goroutine
+	go func() {
+		log.Println("HTTP server running on port 8080")
+		if err := http.ListenAndServe(":8080", router); err != nil {
+			log.Fatalf("HTTP server error: %v", err)
+		}
+	}()
+
+	// Configura e inicia o servidor gRPC
+	grpcListener, err := net.Listen("tcp", ":50051")
+	if err != nil {
+		log.Fatalf("Failed to listen on port 50051: %v", err)
+	}
+	grpcServer := grpc.NewServer()
+
+	// Registra o servidor gRPC
+	orderbus.RegisterOrderServiceServer(grpcServer, &Server{service: service})
+
+	log.Println("gRPC server running on port 50051")
+	if err := grpcServer.Serve(grpcListener); err != nil {
+		log.Fatalf("Failed to serve gRPC: %v", err)
 	}
 }
