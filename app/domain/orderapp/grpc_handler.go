@@ -2,10 +2,9 @@ package orderapp
 
 import (
 	"context"
-	"log"
-
 	"example.com/business/domain/orderbus"
-	"example.com/proto"
+	"example.com/proto/List-Orders-Use-Case/proto"
+	"log"
 )
 
 // OrderServiceGRPC implementa o serviço gRPC para listar orders.

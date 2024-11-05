@@ -1,45 +1,20 @@
 package main
 
 import (
-	"context"
 	"database/sql"
-	"log"
-	"net"
-	"net/http"
-
 	"example.com/app/domain/orderapp"
 	"example.com/app/sdk/mux"
 	"example.com/business/domain/orderbus"
+	"example.com/proto/List-Orders-Use-Case/proto"
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
 	_ "github.com/lib/pq"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+	"log"
+	"net"
+	"net/http"
 )
-
-// Server representa o servidor gRPC
-type Server struct {
-	orderbus.UnimplementedOrderServiceServer
-	service *orderbus.OrderService
-}
-
-func (s *Server) ListOrders(ctx context.Context, req *orderbus.ListOrdersRequest) (*orderbus.ListOrdersResponse, error) {
-	orders, err := s.service.ListOrders()
-	if err != nil {
-		log.Printf("Error querying orders: %v", err)
-		return nil, err
-	}
-
-	var grpcOrders []*orderbus.Order
-	for _, order := range orders {
-		grpcOrders = append(grpcOrders, &orderbus.Order{
-			Id:       order.ID,
-			Item:     order.Item,
-			Quantity: int32(order.Quantity),
-			Price:    order.Price,
-		})
-	}
-	return &orderbus.ListOrdersResponse{Orders: grpcOrders}, nil
-}
 
 func main() {
 	// Conexão com o banco de dados PostgreSQL
@@ -116,7 +91,10 @@ func main() {
 	grpcServer := grpc.NewServer()
 
 	// Registra o servidor gRPC
-	orderbus.RegisterOrderServiceServer(grpcServer, &Server{service: service})
+	proto.RegisterOrderServiceServer(grpcServer, &orderapp.OrderServiceGRPC{Service: service})
+
+	// Enable reflection.
+	reflection.Register(grpcServer)
 
 	log.Println("gRPC server running on port 50051")
 	if err := grpcServer.Serve(grpcListener); err != nil {
