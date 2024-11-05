@@ -10,6 +10,7 @@ type OrderService struct {
 	DB *sql.DB
 }
 
+// TODO: usar context nas queries.
 // ListOrders retorna uma lista de todas as orders do banco de dados.
 func (s *OrderService) ListOrders() ([]Order, error) {
 	rows, err := s.DB.Query("SELECT id, item, quantity, price FROM orders")
